@@ -16,11 +16,16 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         view.backgroundColor = .white
         title = "在庫一覧"
         
+        setupNavigationBar()
         setupTableView()
         
         Task {
             await fetchData()
         }
+    }
+
+    private func setupNavigationBar() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(tappedAddButton))
     }
 
     private func setupTableView() {
@@ -65,5 +70,11 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let detailVC = DetailViewController(id: inventories[indexPath.row].id)
         navigationController?.pushViewController(detailVC, animated: true)
+    }
+}
+
+extension MainViewController {
+    @objc private func tappedAddButton() {
+        print("tapped Add Button")
     }
 }
