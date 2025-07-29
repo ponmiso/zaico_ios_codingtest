@@ -75,6 +75,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
 
 extension MainViewController {
     @objc private func tappedAddButton() {
-        print("tapped Add Button")
+        let createVC = CreateViewController()
+        navigationController?.pushViewController(createVC, animated: true)
     }
 }
