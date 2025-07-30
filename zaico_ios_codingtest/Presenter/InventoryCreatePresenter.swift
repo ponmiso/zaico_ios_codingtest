@@ -10,11 +10,11 @@ protocol InventoryCreatePresenterOutput: AnyObject {
 
 final class InventoryCreatePresenter {
     private weak var output: InventoryCreatePresenterOutput?
-    private let apiClient: APIClientProtocol
+    private let api: InventoriesAPIProtocol
     
-    init(output: InventoryCreatePresenterOutput, apiClient: APIClientProtocol = APIClient.shared) {
+    init(output: InventoryCreatePresenterOutput, api: InventoriesAPIProtocol = InventoriesAPI()) {
         self.output = output
-        self.apiClient = apiClient
+        self.api = api
     }
 }
 
@@ -27,7 +27,7 @@ extension InventoryCreatePresenter: InventoryCreatePresenterInput {
         }
         Task {
             do {
-                try await apiClient.createInventories(title: title)
+                try await api.createInventories(title: title)
                 let alertDetails = AlertDetails(type: .success("在庫データの作成が完了しました"))
                 output?.showAlert(alertDetails: alertDetails)
             } catch {

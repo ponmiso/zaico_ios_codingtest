@@ -16,12 +16,12 @@ protocol InventoryListPresenterOutput: AnyObject {
 
 final class InventoryListPresenter {
     private weak var output: InventoryListPresenterOutput?
-    private let apiClient: APIClientProtocol
+    private let api: InventoriesAPIProtocol
     private var inventories: [Inventory] = []
     
-    init(output: InventoryListPresenterOutput, apiClient: APIClientProtocol = APIClient.shared) {
+    init(output: InventoryListPresenterOutput, api: InventoriesAPIProtocol = InventoriesAPI()) {
         self.output = output
-        self.apiClient = apiClient
+        self.api = api
     }
 }
 
@@ -37,7 +37,7 @@ extension InventoryListPresenter: InventoryListPresenterInput {
     func fetchListData() {
         Task {
             do {
-                let data = try await apiClient.fetchInventories()
+                let data = try await api.fetchInventories()
                 await MainActor.run {
                     inventories = data
                     output?.reloadData()
