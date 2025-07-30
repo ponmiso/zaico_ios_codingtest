@@ -82,7 +82,7 @@ class APIClient {
 
 extension APIClient {
     func createInventories(title: String) async throws {
-        var endpoint = "/api/v1/inventories"
+        let endpoint = "/api/v1/inventories"
         
         guard let url = URL(string: baseURL + endpoint) else {
             throw URLError(.badURL)
