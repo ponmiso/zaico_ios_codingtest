@@ -31,11 +31,12 @@ class InventoryImageCell: UITableViewCell {
         contentView.addSubview(itemImageView)
 
         NSLayoutConstraint.activate([
+            leftText.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
             leftText.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            leftText.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-
+            
+            itemImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
+            itemImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
             itemImageView.leadingAnchor.constraint(equalTo: leftText.trailingAnchor, constant: 16),
-            itemImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             itemImageView.widthAnchor.constraint(equalToConstant: 100),
             itemImageView.heightAnchor.constraint(equalToConstant: 100)
         ])
