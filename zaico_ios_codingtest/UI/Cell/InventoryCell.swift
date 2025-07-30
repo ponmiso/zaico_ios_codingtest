@@ -41,6 +41,7 @@ class InventoryCell: UITableViewCell {
         rightText.textAlignment = .left
         rightText.lineBreakMode = .byTruncatingTail
         rightText.numberOfLines = 1
+        rightText.accessibilityIdentifier = "InventoryCell_rightText"
         
         contentView.addSubview(leftText)
         contentView.addSubview(rightText)

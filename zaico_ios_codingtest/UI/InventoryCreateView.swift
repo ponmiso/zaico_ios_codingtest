@@ -10,6 +10,7 @@ struct InventoryCreateView: View {
                 Text("タイトル")
                 TextField("", text: $adapter.title)
                     .textFieldStyle(.roundedBorder)
+                    .accessibilityIdentifier("InventoryCreateView_titleTextField")
             }
             .padding(.horizontal, 16)
             
@@ -24,6 +25,7 @@ struct InventoryCreateView: View {
                     .foregroundStyle(.white)
                     .background(.orange)
             }
+            .accessibilityIdentifier("InventoryCreateView_createButton")
         }
         .alert("", isPresented: $adapter.isPresentedAlert, presenting: adapter.alertDetails) { details in
             Button("OK") {

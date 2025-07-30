@@ -23,12 +23,53 @@ final class zaico_ios_codingtestUITests: XCTestCase {
     }
 
     @MainActor
-    func testExample() throws {
+    func testAllScreen() throws {
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
         app.launch()
-
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        
+        // 在庫一覧で在庫データが取得できているか
+        let inventoryListTable = app.tables.element(boundBy: 0)
+        let inventoryListCells = inventoryListTable.cells
+        XCTAssertGreaterThan(inventoryListCells.count, 0)
+        
+        // 在庫詳細へ
+        inventoryListCells.element(boundBy: 0).tap()
+        // 在庫詳細で正しい在庫が表示されているかチェック
+        let InventoryDetailTable = app.tables.element(boundBy: 0)
+        let cell = InventoryDetailTable.cells.element(boundBy: 2)
+        let rightLabel = cell.staticTexts["InventoryCell_rightText"]
+        XCTAssertTrue(rightLabel.exists)
+        XCTAssertEqual(rightLabel.label, "おにぎり")
+        
+        // 在庫一覧へ戻る
+        app.navigationBars.buttons.element(boundBy: 0).tap()
+        // 在庫データ作成画面へ
+        app.navigationBars.buttons["InventoryListViewController_addButton"].tap()
+        
+        // 在庫作成画面で正しくデータが作成できる
+        let textField = app.textFields["InventoryCreateView_titleTextField"]
+        XCTAssertTrue(textField.exists)
+        textField.tap()
+        let text = "test\(Date.now)"
+        textField.typeText(text)
+        let createButton = app.buttons["InventoryCreateView_createButton"]
+        XCTAssertTrue(createButton.exists)
+        createButton.tap()
+        // 作成後のアラートを消す
+        let alert = app.alerts.firstMatch
+        XCTAssertTrue(alert.waitForExistence(timeout: 3))
+        alert.buttons.firstMatch.tap()  // ボタンタイトルが「OK」の場合
+        
+        // 在庫一覧の在庫データに追加できているか
+        let inventoryListTable2 = app.tables.element(boundBy: 0)
+        let inventoryListCells2 = inventoryListTable2.cells
+        XCTAssertGreaterThan(inventoryListCells2.count, 0)
+        
+        let lastCell = inventoryListCells2.element(boundBy: inventoryListCells2.count - 1)
+        let lastCellLabel = lastCell.staticTexts["InventoryCell_rightText"]
+        XCTAssertTrue(lastCellLabel.exists)
+        XCTAssertEqual(lastCellLabel.label, text)
     }
 
     @MainActor

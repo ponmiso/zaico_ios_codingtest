@@ -32,6 +32,7 @@ class InventoryListViewController: UIViewController, UITableViewDataSource, UITa
 
     private func setupNavigationBar() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(tappedAddButton))
+        navigationItem.rightBarButtonItem?.accessibilityIdentifier = "InventoryListViewController_addButton"
     }
 
     private func setupTableView() {
