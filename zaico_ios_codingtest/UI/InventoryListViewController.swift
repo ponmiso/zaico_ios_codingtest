@@ -73,7 +73,7 @@ extension InventoryListViewController: InventoryListPresenterOutput {
     }
     
     func showInventoryDetail(inventory: Inventory) {
-        let detailVC = InventoryDetailViewController(id: inventory.id)
+        let detailVC = InventoryDetailViewController.viewController(inventoryId: inventory.id)
         navigationController?.pushViewController(detailVC, animated: true)
     }
     

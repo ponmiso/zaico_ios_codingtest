@@ -9,19 +9,11 @@ import UIKit
 
 class InventoryDetailViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
-    private let inventoryId: Int
-    private var inventory: Inventory?
     private let tableView = UITableView()
-    private let cellTitles = ["ID", "在庫画像", "タイトル", "数量"]
     
-    // initメソッドでIDを渡す
-    init(id: Int) {
-        self.inventoryId = id
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    private var input: InventoryDetailPresenterInput!
+    private func inject(input: InventoryDetailPresenterInput) {
+        self.input = input
     }
     
     override func viewDidLoad() {
@@ -32,9 +24,7 @@ class InventoryDetailViewController: UIViewController, UITableViewDataSource, UI
         
         setupTableView()
         
-        Task {
-            await fetchData()
-        }
+        input.fetchDetailData()
     }
     
     private func setupTableView() {
@@ -54,20 +44,8 @@ class InventoryDetailViewController: UIViewController, UITableViewDataSource, UI
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
     }
     
-    private func fetchData() async {
-        do {
-            let data = try await APIClient.shared.fetchInventorie(id: inventoryId)
-            await MainActor.run {
-                inventory = data
-                tableView.reloadData()
-            }
-        } catch {
-            print("Error fetching data: \(error.localizedDescription)")
-        }
-    }
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return cellTitles.count
+        return input.numberOfItems
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -75,31 +53,31 @@ class InventoryDetailViewController: UIViewController, UITableViewDataSource, UI
         switch indexPath.row {
         case 0:
             let cell = tableView.dequeueReusableCell(withIdentifier: "InventoryCell", for: indexPath) as! InventoryCell
-            cell.configure(leftText: cellTitles[indexPath.row],
-                           rightText: String(inventory?.id ?? 0))
+            cell.configure(leftText: input.cellTitle(index: indexPath.row),
+                           rightText: String(input.inventory?.id ?? 0))
             return cell
         case 1:
             let cell = tableView.dequeueReusableCell(withIdentifier: "InventoryImageCell", for: indexPath) as! InventoryImageCell
-            if let imageURL = inventory?.itemImage?.url {
-                cell.configure(leftText: cellTitles[indexPath.row],
+            if let imageURL = input.inventory?.itemImage?.url {
+                cell.configure(leftText: input.cellTitle(index: indexPath.row),
                                rightImageURLString: imageURL)
             } else {
-                cell.configure(leftText: cellTitles[indexPath.row],
+                cell.configure(leftText: input.cellTitle(index: indexPath.row),
                                rightImageURLString: "imageURL")
             }
             return cell
         case 2:
             let cell = tableView.dequeueReusableCell(withIdentifier: "InventoryCell", for: indexPath) as! InventoryCell
-            cell.configure(leftText: cellTitles[indexPath.row],
-                           rightText: inventory?.title ?? "")
+            cell.configure(leftText: input.cellTitle(index: indexPath.row),
+                           rightText: input.inventory?.title ?? "")
             return cell
         case 3:
             let cell = tableView.dequeueReusableCell(withIdentifier: "InventoryCell", for: indexPath) as! InventoryCell
             var quantity = "0"
-            if let q = inventory?.quantity {
+            if let q = input.inventory?.quantity {
                 quantity = String(q)
             }
-            cell.configure(leftText: cellTitles[indexPath.row],
+            cell.configure(leftText: input.cellTitle(index: indexPath.row),
                            rightText: quantity)
             return cell
         default:
@@ -114,3 +92,17 @@ class InventoryDetailViewController: UIViewController, UITableViewDataSource, UI
     }
 }
 
+extension InventoryDetailViewController: InventoryDetailPresenterOutput {
+    func reloadData() {
+        tableView.reloadData()
+    }
+}
+
+extension InventoryDetailViewController {
+    static func viewController(inventoryId: Int) -> UIViewController {
+        let detailVC = InventoryDetailViewController()
+        let presenter = InventoryDetailPresenter(inventoryId: inventoryId, output: detailVC)
+        detailVC.inject(input: presenter)
+        return detailVC
+    }
+}
