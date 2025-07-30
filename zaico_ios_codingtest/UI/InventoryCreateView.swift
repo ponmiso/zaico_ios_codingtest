@@ -1,17 +1,14 @@
 import SwiftUI
 
 struct InventoryCreateView: View {
-    @State private var title: String = ""
     @Environment(\.dismiss) var dismiss
-    
-    @State private var isPresentedAlert = false
-    @State private var alertDetails: AlertDetails?
+    @StateObject private var adapter = InventoryCreateAdapter()
     
     var body: some View {
         VStack(alignment: .leading) {
             Group {
                 Text("タイトル")
-                TextField("", text: $title)
+                TextField("", text: $adapter.title)
                     .textFieldStyle(.roundedBorder)
             }
             .padding(.horizontal, 16)
@@ -19,7 +16,7 @@ struct InventoryCreateView: View {
             Spacer()
             
             Button {
-                createInventories()
+                adapter.didTapCreate()
             } label: {
                 Text("作成する")
                     .frame(height: 44)
@@ -28,7 +25,7 @@ struct InventoryCreateView: View {
                     .background(.orange)
             }
         }
-        .alert("", isPresented: $isPresentedAlert, presenting: alertDetails) { details in
+        .alert("", isPresented: $adapter.isPresentedAlert, presenting: adapter.alertDetails) { details in
             Button("OK") {
                 switch details.type {
                 case .success:
@@ -43,38 +40,7 @@ struct InventoryCreateView: View {
                 Text(message)
             }
         }
-    }
-}
-
-extension InventoryCreateView {
-    private func createInventories() {
-        if title.isEmpty {
-            alertDetails = AlertDetails(type: .error("タイトルを入力してください"))
-            isPresentedAlert = true
-            return
-        }
-        Task {
-            do {
-                try await APIClient.shared.createInventories(title: title)
-                alertDetails = AlertDetails(type: .success("在庫データの作成が完了しました"))
-                isPresentedAlert = true
-            } catch {
-                alertDetails = AlertDetails(type: .error("登録に失敗しました：\(error.localizedDescription)"))
-                isPresentedAlert = true
-            }
-        }
-    }
-}
-
-extension InventoryCreateView {
-    struct AlertDetails: Identifiable {
-        let id = UUID()
-        let type: AlertType
-    }
-
-    enum AlertType {
-        case success(String)
-        case error(String)
+        .onAppear { adapter.inject() }
     }
 }
 
