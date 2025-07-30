@@ -9,7 +9,7 @@ protocol InventoriesAPIProtocol {
 struct InventoriesAPI: InventoriesAPIProtocol {
     func fetchInventories() async throws -> [Inventory] {
         do {
-            let response = try await request(httpMethod: "GET")
+            let response = try await request(endpoint: .inventories)
             return try JSONDecoder().decode([Inventory].self, from: response)
         } catch {
             throw error
@@ -17,14 +17,12 @@ struct InventoriesAPI: InventoriesAPIProtocol {
     }
     
     func fetchInventorie(id: Int?) async throws -> Inventory {
-        let path = if let id {
-            "/\(id)"
-        } else {
-            ""
+        guard let id else {
+            throw NSError(domain: "Missing ID", code: 1)
         }
         
         do {
-            let response = try await request(httpMethod: "GET", path: path)
+            let response = try await request(endpoint: .inventory(id: id))
             return try JSONDecoder().decode(Inventory.self, from: response)
         } catch {
             throw error
@@ -40,7 +38,7 @@ struct InventoriesAPI: InventoriesAPIProtocol {
         }
         
         do {
-            try await request(httpMethod: "POST", headerFields: headerFields, httpBody: httpBody)
+            try await request(endpoint: .createInventory, headerFields: headerFields, httpBody: httpBody)
         } catch {
             throw error
         }
@@ -49,15 +47,13 @@ struct InventoriesAPI: InventoriesAPIProtocol {
 
 extension InventoriesAPI {
     @discardableResult
-    private func request(httpMethod: String, path: String = "", headerFields: [String: String] = [:], httpBody: Data? = nil) async throws -> Data {
-        let endpoint = "/api/v1/inventories" + path
-        
-        guard let url = URL(string: APIClient.baseURL + endpoint) else {
+    private func request(endpoint: Endpoint, headerFields: [String: String] = [:], httpBody: Data? = nil) async throws -> Data {
+        guard let url = URL(string: endpoint.urlString) else {
             throw URLError(.badURL)
         }
         
         var request = URLRequest(url: url)
-        request.httpMethod = httpMethod
+        request.httpMethod = endpoint.method.rawValue
         request.setValue("Bearer \(APIClient.token)", forHTTPHeaderField: "Authorization")
         headerFields.forEach { value, field in
             request.setValue(value, forHTTPHeaderField: field)
