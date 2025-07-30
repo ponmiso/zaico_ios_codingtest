@@ -5,8 +5,8 @@ import Testing
 struct InventoryListPresenterTests {
     @Test func 在庫一覧の数が正しいこと() async {
         let output = SuccessInventoryListPresenterTestOutput()
-        let apiClient = Self.SuccessAPIClient()
-        let presenter = InventoryListPresenter(output: output, apiClient: apiClient)
+        let api = Self.SuccessAPIClient()
+        let presenter = InventoryListPresenter(output: output, api: api)
         
         presenter.fetchListData()
         let _ = await output.calledReloadDataPublisher
@@ -20,8 +20,8 @@ struct InventoryListPresenterTests {
     
     @Test func 在庫一覧から正しい在庫が取得できること() async {
         let output = SuccessInventoryListPresenterTestOutput()
-        let apiClient = Self.SuccessAPIClient()
-        let presenter = InventoryListPresenter(output: output, apiClient: apiClient)
+        let api = Self.SuccessAPIClient()
+        let presenter = InventoryListPresenter(output: output, api: api)
         
         presenter.fetchListData()
         let _ = await output.calledReloadDataPublisher
@@ -37,7 +37,7 @@ struct InventoryListPresenterTests {
 }
 
 extension InventoryListPresenterTests {
-    class SuccessAPIClient: APIClientProtocol {
+    class SuccessAPIClient: InventoriesAPIProtocol {
         func fetchInventories() async throws -> [zaico_ios_codingtest.Inventory] {
             [
                 Inventory(id: 1, title: "あああ", quantity: "100", itemImage: nil),

@@ -6,8 +6,8 @@ import Testing
 struct InventoryCreatePresenterTests {
     @Test func タイトルが入力されていると在庫データが作成できること() async {
         let output = InventoryCreatePresenterTestOutput()
-        let apiClient = Self.SuccessAPIClient()
-        let presenter = InventoryCreatePresenter(output: output, apiClient: apiClient)
+        let api = Self.SuccessAPIClient()
+        let presenter = InventoryCreatePresenter(output: output, api: api)
         
         presenter.didTapCreate(title: "test")
         let alertDetails = await output.alertDetailsPublisher
@@ -25,8 +25,8 @@ struct InventoryCreatePresenterTests {
     
     @Test func タイトルが入力されていないと在庫データが作成できないこと() async {
         let output = InventoryCreatePresenterTestOutput()
-        let apiClient = Self.SuccessAPIClient()
-        let presenter = InventoryCreatePresenter(output: output, apiClient: apiClient)
+        let api = Self.SuccessAPIClient()
+        let presenter = InventoryCreatePresenter(output: output, api: api)
         
         presenter.didTapCreate(title: "")
         let alertDetails = await output.alertDetailsPublisher
@@ -44,8 +44,8 @@ struct InventoryCreatePresenterTests {
     
     @Test func APIで失敗した場合は在庫データが作成できないこと() async {
         let output = InventoryCreatePresenterTestOutput()
-        let apiClient = Self.FailureAPIClient()
-        let presenter = InventoryCreatePresenter(output: output, apiClient: apiClient)
+        let api = Self.FailureAPIClient()
+        let presenter = InventoryCreatePresenter(output: output, api: api)
         
         presenter.didTapCreate(title: "test")
         let alertDetails = await output.alertDetailsPublisher
@@ -63,7 +63,7 @@ struct InventoryCreatePresenterTests {
 }
 
 extension InventoryCreatePresenterTests {
-    class SuccessAPIClient: APIClientProtocol {
+    class SuccessAPIClient: InventoriesAPIProtocol {
         func fetchInventories() async throws -> [zaico_ios_codingtest.Inventory] {
             []
         }
@@ -75,7 +75,7 @@ extension InventoryCreatePresenterTests {
         func createInventories(title: String) async throws {}
     }
     
-    class FailureAPIClient: APIClientProtocol {
+    class FailureAPIClient: InventoriesAPIProtocol {
         func fetchInventories() async throws -> [zaico_ios_codingtest.Inventory] {
             []
         }

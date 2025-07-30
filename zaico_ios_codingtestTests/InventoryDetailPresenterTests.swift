@@ -6,8 +6,8 @@ import Testing
 struct InventoryDetailPresenterTests {
     @Test func 在庫の詳細情報が正しいこと() async {
         let output = InventoryDetailPresenterTestOutput()
-        let apiClient = Self.SuccessAPIClient()
-        let presenter = InventoryDetailPresenter(inventoryId: Self.inventory.id, output: output, apiClient: apiClient)
+        let api = Self.SuccessAPIClient()
+        let presenter = InventoryDetailPresenter(inventoryId: Self.inventory.id, output: output, api: api)
         
         presenter.fetchDetailData()
         let _ = await output.didFinishedFetchDetailDataPublisher
@@ -21,8 +21,8 @@ struct InventoryDetailPresenterTests {
     
     @Test func 存在しない在庫情報が取得できないこと() async {
         let output = InventoryDetailPresenterTestOutput()
-        let apiClient = Self.FailureAPIClient()
-        let presenter = InventoryDetailPresenter(inventoryId: 2, output: output, apiClient: apiClient)
+        let api = Self.FailureAPIClient()
+        let presenter = InventoryDetailPresenter(inventoryId: 2, output: output, api: api)
         
         presenter.fetchDetailData()
         let _ = await output.didFinishedFetchDetailDataPublisher
@@ -38,7 +38,7 @@ struct InventoryDetailPresenterTests {
 extension InventoryDetailPresenterTests {
     static let inventory = Inventory(id: 1, title: "あああ", quantity: "100", itemImage: nil)
     
-    class SuccessAPIClient: APIClientProtocol {
+    class SuccessAPIClient: InventoriesAPIProtocol {
         func fetchInventories() async throws -> [zaico_ios_codingtest.Inventory] {
             []
         }
@@ -50,7 +50,7 @@ extension InventoryDetailPresenterTests {
         func createInventories(title: String) async throws {}
     }
     
-    class FailureAPIClient: APIClientProtocol {
+    class FailureAPIClient: InventoriesAPIProtocol {
         func fetchInventories() async throws -> [zaico_ios_codingtest.Inventory] {
             []
         }
