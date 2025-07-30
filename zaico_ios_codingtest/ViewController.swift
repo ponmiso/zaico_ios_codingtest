@@ -18,6 +18,10 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         setupNavigationBar()
         setupTableView()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
         Task {
             await fetchData()
