@@ -9,7 +9,11 @@ import UIKit
 
 class InventoryListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     private let tableView = UITableView()
-    private var inventories: [Inventory] = []
+    
+    private var input: InventoryListPresenterInput!
+    func inject(input: InventoryListPresenterInput) {
+        self.input = input
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,9 +27,7 @@ class InventoryListViewController: UIViewController, UITableViewDataSource, UITa
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        Task {
-            await fetchData()
-        }
+        input.fetchListData()
     }
 
     private func setupNavigationBar() {
@@ -48,38 +50,51 @@ class InventoryListViewController: UIViewController, UITableViewDataSource, UITa
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
     }
     
-    private func fetchData() async {
-        do {
-            let data = try await APIClient.shared.fetchInventories()
-            await MainActor.run {
-                inventories = data
-                tableView.reloadData()
-            }
-        } catch {
-            print("Error fetching data: \(error.localizedDescription)")
-        }
-    }
-
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return inventories.count
+        return input.numberOfItems
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "InventoryCell", for: indexPath) as! InventoryCell
-        cell.configure(leftText: String(inventories[indexPath.row].id),
-                       rightText: inventories[indexPath.row].title)
+        let inventory = input.item(index: indexPath.row)
+        cell.configure(leftText: String(inventory.id),
+                       rightText: inventory.title)
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let detailVC = InventoryDetailViewController(id: inventories[indexPath.row].id)
+        input.didSelectCell(index: indexPath.row)
+    }
+}
+
+extension InventoryListViewController: InventoryListPresenterOutput {
+    func reloadData() {
+        tableView.reloadData()
+    }
+    
+    func showInventoryDetail(inventory: Inventory) {
+        let detailVC = InventoryDetailViewController(id: inventory.id)
         navigationController?.pushViewController(detailVC, animated: true)
     }
+    
+    func showInventoryCreate() {
+        let createVC = InventoryCreateViewController()
+        navigationController?.pushViewController(createVC, animated: true)
+    }
+    
 }
 
 extension InventoryListViewController {
     @objc private func tappedAddButton() {
-        let createVC = InventoryCreateViewController()
-        navigationController?.pushViewController(createVC, animated: true)
+        input.didTapAdd()
+    }
+}
+
+extension InventoryListViewController {
+    static var viewContoroller: UIViewController {
+        let listVC = InventoryListViewController()
+        let presenter = InventoryListPresenter(output: listVC)
+        listVC.inject(input: presenter)
+        return listVC
     }
 }
