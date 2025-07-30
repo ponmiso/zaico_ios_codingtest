@@ -2,6 +2,7 @@ import SwiftUI
 
 struct CreateView: View {
     @State private var title: String = ""
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -15,13 +16,30 @@ struct CreateView: View {
             Spacer()
             
             Button {
-                print("tapped button: \(title)")
+                createInventories()
             } label: {
                 Text("作成する")
                     .frame(height: 44)
                     .frame(maxWidth: .infinity)
                     .foregroundStyle(.white)
                     .background(.orange)
+            }
+        }
+    }
+}
+
+extension CreateView {
+    private func createInventories() {
+        if title.isEmpty {
+            print("title is empty")
+            return
+        }
+        Task {
+            do {
+                try await APIClient.shared.createInventories(title: title)
+                dismiss()
+            } catch {
+                print(error.localizedDescription)
             }
         }
     }
