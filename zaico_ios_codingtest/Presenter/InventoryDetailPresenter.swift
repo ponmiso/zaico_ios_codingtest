@@ -39,7 +39,7 @@ extension InventoryDetailPresenter: InventoryDetailPresenterInput {
     func fetchDetailData() {
         Task {
             do {
-                let data = try await APIClient.shared.fetchInventorie(id: inventoryId)
+                let data = try await apiClient.fetchInventorie(id: inventoryId)
                 await MainActor.run {
                     inventory = data
                     output?.reloadData()

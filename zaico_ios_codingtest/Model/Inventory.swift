@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Inventory: Codable {
+struct Inventory: Codable, Equatable {
     let id: Int
     let title: String
     let quantity: String?
@@ -21,6 +21,6 @@ struct Inventory: Codable {
     }
 }
 
-struct ItemImage: Codable {
+struct ItemImage: Codable, Equatable {
     let url: String?
 }
