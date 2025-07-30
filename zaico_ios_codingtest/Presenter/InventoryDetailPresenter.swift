@@ -9,6 +9,7 @@ protocol InventoryDetailPresenterInput {
 
 protocol InventoryDetailPresenterOutput: AnyObject {
     func reloadData()
+    func showAlert(message: String)
 }
 
 final class InventoryDetailPresenter {
@@ -44,7 +45,9 @@ extension InventoryDetailPresenter: InventoryDetailPresenterInput {
                     output?.reloadData()
                 }
             } catch {
-                print("Error fetching data: \(error.localizedDescription)")
+                await MainActor.run {
+                    output?.showAlert(message: "Error fetching data: \(error.localizedDescription)")
+                }
             }
         }
     }

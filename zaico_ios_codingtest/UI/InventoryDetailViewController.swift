@@ -96,6 +96,15 @@ extension InventoryDetailViewController: InventoryDetailPresenterOutput {
     func reloadData() {
         tableView.reloadData()
     }
+    
+    func showAlert(message: String) {
+        let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+        let action = UIAlertAction(title: "OK", style: .default) { [weak self] _ in
+            self?.navigationController?.popViewController(animated: true)
+        }
+        alert.addAction(action)
+        present(alert, animated: true)
+    }
 }
 
 extension InventoryDetailViewController {
