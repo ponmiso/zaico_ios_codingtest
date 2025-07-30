@@ -16,10 +16,10 @@ protocol InventoryListPresenterOutput: AnyObject {
 
 final class InventoryListPresenter {
     private weak var output: InventoryListPresenterOutput?
-    private let apiClient: APIClient
+    private let apiClient: APIClientProtocol
     private var inventories: [Inventory] = []
     
-    init(output: InventoryListPresenterOutput, apiClient: APIClient = APIClient.shared) {
+    init(output: InventoryListPresenterOutput, apiClient: APIClientProtocol = APIClient.shared) {
         self.output = output
         self.apiClient = apiClient
     }

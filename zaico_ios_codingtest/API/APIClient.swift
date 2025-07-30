@@ -7,6 +7,12 @@
 
 import Foundation
 
+protocol APIClientProtocol {
+    func fetchInventories() async throws -> [Inventory]
+    func fetchInventorie(id: Int?) async throws -> Inventory
+    func createInventories(title: String) async throws
+}
+
 class APIClient {
     static let shared = APIClient()
     
@@ -14,7 +20,9 @@ class APIClient {
     private let token = Secret.token // 実際のトークンに置き換える
     
     private init() {}
+}
 
+extension APIClient: APIClientProtocol {
     func fetchInventories() async throws -> [Inventory] {
         let endpoint = "/api/v1/inventories"
         
@@ -78,9 +86,7 @@ class APIClient {
             throw error
         }
     }
-}
-
-extension APIClient {
+    
     func createInventories(title: String) async throws {
         let endpoint = "/api/v1/inventories"
         

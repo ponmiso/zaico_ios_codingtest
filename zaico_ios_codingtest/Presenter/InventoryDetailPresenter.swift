@@ -13,13 +13,13 @@ protocol InventoryDetailPresenterOutput: AnyObject {
 
 final class InventoryDetailPresenter {
     private weak var output: InventoryDetailPresenterOutput?
-    private let apiClient: APIClient
+    private let apiClient: APIClientProtocol
     private let inventoryId: Int
     private let cellTitles = ["ID", "在庫画像", "タイトル", "数量"]
     
     var inventory: Inventory?
     
-    init(inventoryId: Int, output: InventoryDetailPresenterOutput, apiClient: APIClient = APIClient.shared) {
+    init(inventoryId: Int, output: InventoryDetailPresenterOutput, apiClient: APIClientProtocol = APIClient.shared) {
         self.inventoryId = inventoryId
         self.output = output
         self.apiClient = apiClient
