@@ -1,5 +1,5 @@
 //
-//  DetailViewController.swift
+//  InventoryDetailViewController.swift
 //  zaico_ios_codingtest
 //
 //  Created by ryo hirota on 2025/03/11.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class DetailViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class InventoryDetailViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     private let inventoryId: Int
     private var inventory: Inventory?

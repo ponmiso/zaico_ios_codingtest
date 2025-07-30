@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MainViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class InventoryListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     private let tableView = UITableView()
     private var inventories: [Inventory] = []
 
@@ -72,14 +72,14 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let detailVC = DetailViewController(id: inventories[indexPath.row].id)
+        let detailVC = InventoryDetailViewController(id: inventories[indexPath.row].id)
         navigationController?.pushViewController(detailVC, animated: true)
     }
 }
 
-extension MainViewController {
+extension InventoryListViewController {
     @objc private func tappedAddButton() {
-        let createVC = CreateViewController()
+        let createVC = InventoryCreateViewController()
         navigationController?.pushViewController(createVC, animated: true)
     }
 }

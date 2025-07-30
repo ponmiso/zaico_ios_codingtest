@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct CreateView: View {
+struct InventoryCreateView: View {
     @State private var title: String = ""
     @Environment(\.dismiss) var dismiss
     
@@ -46,7 +46,7 @@ struct CreateView: View {
     }
 }
 
-extension CreateView {
+extension InventoryCreateView {
     private func createInventories() {
         if title.isEmpty {
             alertDetails = AlertDetails(type: .error("タイトルを入力してください"))
@@ -66,7 +66,7 @@ extension CreateView {
     }
 }
 
-extension CreateView {
+extension InventoryCreateView {
     struct AlertDetails: Identifiable {
         let id = UUID()
         let type: AlertType
@@ -79,5 +79,5 @@ extension CreateView {
 }
 
 #Preview {
-    CreateView()
+    InventoryCreateView()
 }
