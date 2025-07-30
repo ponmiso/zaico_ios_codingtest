@@ -11,8 +11,8 @@ import UIKit
 
 class InventoryCell: UITableViewCell {
     
-    let label1 = UILabel()
-    let label2 = UILabel()
+    let leftText = UILabel()
+    let rightText = UILabel()
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -31,42 +31,42 @@ class InventoryCell: UITableViewCell {
     }
     
     private func setupUI() {
-        // ラベル1の設定
-        label1.font = UIFont.systemFont(ofSize: 16)
-        label1.translatesAutoresizingMaskIntoConstraints = false
+        // 左ラベルの設定
+        leftText.font = UIFont.systemFont(ofSize: 16)
+        leftText.translatesAutoresizingMaskIntoConstraints = false
         
-        // ラベル2の設定
-        label2.font = UIFont.systemFont(ofSize: 16)
-        label2.translatesAutoresizingMaskIntoConstraints = false
-        label2.textAlignment = .left
-        label2.lineBreakMode = .byTruncatingTail
-        label2.numberOfLines = 1
+        // 右ラベルの設定
+        rightText.font = UIFont.systemFont(ofSize: 16)
+        rightText.translatesAutoresizingMaskIntoConstraints = false
+        rightText.textAlignment = .left
+        rightText.lineBreakMode = .byTruncatingTail
+        rightText.numberOfLines = 1
         
-        contentView.addSubview(label1)
-        contentView.addSubview(label2)
+        contentView.addSubview(leftText)
+        contentView.addSubview(rightText)
         
         // レイアウト制約
         NSLayoutConstraint.activate([
-            label1.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
-            label1.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            leftText.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
+            leftText.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             
-            label2.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
-            label2.leadingAnchor.constraint(equalTo: label1.trailingAnchor, constant: 10),
-            label2.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            rightText.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
+            rightText.leadingAnchor.constraint(equalTo: leftText.trailingAnchor, constant: 10),
+            rightText.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
-            label1.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
-            label2.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
+            leftText.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
+            rightText.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
         ])
         
         // 右側のラベルだけ省略するようにする
-        label1.setContentHuggingPriority(.required, for: .horizontal)
-        label1.setContentCompressionResistancePriority(.required, for: .horizontal)
-        label2.setContentHuggingPriority(.defaultLow, for: .horizontal)
-        label2.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        leftText.setContentHuggingPriority(.required, for: .horizontal)
+        leftText.setContentCompressionResistancePriority(.required, for: .horizontal)
+        rightText.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        rightText.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
     }
     
     func configure(leftText: String, rightText: String) {
-        label1.text = leftText
-        label2.text = rightText
+        self.leftText.text = leftText
+        self.rightText.text = rightText
     }
 }
